@@ -1,0 +1,48 @@
+name: CI
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  quality:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    strategy:
+      matrix:
+        python: ['3.12', '3.13']
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python }}
+          cache: pip
+      - run: python -m pip install -r requirements.lock
+      - run: python -m pip install --no-deps --no-build-isolation -e .
+      - run: python -m pip check
+      - run: python -m ruff check .
+      - run: python -m ruff format --check .
+      - run: python -m pytest -q --junitxml=reports/pytest.xml
+      - run: python -m build --wheel --no-isolation
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: test-evidence-${{ matrix.python }}
+          path: reports/pytest.xml
+  container:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - run: docker build -t toolkit:ci .
+      - name: Smoke test container
+        shell: bash
+        run: |
+          docker run -d --name toolkit -p 127.0.0.1:8000:8000 toolkit:ci
+          trap 'docker logs toolkit; docker rm -f toolkit' EXIT
+          for attempt in $(seq 1 30); do
+            if curl --fail --silent http://127.0.0.1:8000/health; then exit 0; fi
+            sleep 2
+          done
+          exit 1
