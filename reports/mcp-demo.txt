@@ -1,0 +1,33 @@
+Discovered tools: fleet_analytics, document_lookup, propose_ticket
+{
+  "trace_id": "a2473908-2eec-4832-b3d7-650998f1fa3c",
+  "status": "ok",
+  "data": {
+    "rows": [
+      {
+        "region": "Austin",
+        "vehicles": 8,
+        "distance_km": 8506.0,
+        "maintenance_alerts": 18
+      },
+      {
+        "region": "Dallas",
+        "vehicles": 8,
+        "distance_km": 8194.0,
+        "maintenance_alerts": 17
+      },
+      {
+        "region": "Denver",
+        "vehicles": 8,
+        "distance_km": 8350.0,
+        "maintenance_alerts": 15
+      }
+    ],
+    "source": "vehicles",
+    "metric": "fleet_summary",
+    "region": "All"
+  },
+  "error": null,
+  "code": null,
+  "synthetic": true
+}

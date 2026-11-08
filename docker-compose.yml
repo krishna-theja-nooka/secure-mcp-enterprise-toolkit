@@ -1,0 +1,18 @@
+services:
+  dashboard:
+    build: .
+    image: secure-mcp-enterprise-toolkit:local
+    ports:
+      - "127.0.0.1:8000:8000"
+    volumes:
+      - toolkit-data:/data
+    restart: unless-stopped
+  init:
+    build: .
+    image: secure-mcp-enterprise-toolkit:local
+    profiles: [tools]
+    command: [python, -m, toolkit.bootstrap]
+    volumes:
+      - toolkit-data:/data
+volumes:
+  toolkit-data:

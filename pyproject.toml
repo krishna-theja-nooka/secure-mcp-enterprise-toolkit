@@ -1,0 +1,26 @@
+[build-system]
+requires = ["setuptools>=75", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "secure-mcp-enterprise-toolkit"
+version = "0.1.0"
+description = "Governed MCP tools with bounded analytics, source-aware search, and human-approved ticket creation."
+requires-python = ">=3.12"
+dependencies = ["mcp==1.26.0", "fastapi==0.128.0", "uvicorn==0.40.0", "httpx==0.28.1"]
+
+[project.scripts]
+toolkit-init = "toolkit.bootstrap:main"
+toolkit-mcp = "toolkit.mcp_server:main"
+
+[tool.setuptools.packages.find]
+include = ["toolkit*"]
+
+[tool.setuptools.package-data]
+toolkit = ["static/*"]
+
+[tool.ruff]
+line-length = 100
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
